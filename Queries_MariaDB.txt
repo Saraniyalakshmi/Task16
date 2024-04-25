@@ -1,0 +1,142 @@
+-- Table for movies
+CREATE TABLE movies (
+    movie_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    release_year INT,
+    duration_minutes INT,
+    plot TEXT
+);
+
+-- Table for genres
+CREATE TABLE genres (
+    genre_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+-- Table for movie-genre relationship
+CREATE TABLE movie_genres (
+    movie_id INT,
+    genre_id INT,
+    PRIMARY KEY (movie_id, genre_id),
+    FOREIGN KEY (movie_id) REFERENCES movies(movie_id),
+    FOREIGN KEY (genre_id) REFERENCES genres(genre_id)
+);
+
+-- Table for media
+CREATE TABLE media (
+    media_id INT AUTO_INCREMENT PRIMARY KEY,
+    movie_id INT,
+    media_type ENUM('Trailer', 'Clip', 'Interview', 'Behind the Scenes', 'Other') NOT NULL,
+    url VARCHAR(255) NOT NULL,
+    FOREIGN KEY (movie_id) REFERENCES movies(movie_id)
+);
+
+-- Table for users
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL
+);
+
+-- Table for reviews
+CREATE TABLE reviews (
+    review_id INT AUTO_INCREMENT PRIMARY KEY,
+    movie_id INT,
+    user_id INT,
+    rating DECIMAL(3, 1),
+    review TEXT,
+    FOREIGN KEY (movie_id) REFERENCES movies(movie_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+-- Table for artists
+CREATE TABLE artists (
+    artist_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+-- Table for artist skills
+CREATE TABLE artist_skills (
+    artist_id INT,
+    skill VARCHAR(50) NOT NULL,
+    PRIMARY KEY (artist_id, skill),
+    FOREIGN KEY (artist_id) REFERENCES artists(artist_id)
+);
+
+-- Table for roles
+CREATE TABLE roles (
+    role_id INT AUTO_INCREMENT PRIMARY KEY,
+    role_name VARCHAR(100) NOT NULL
+);
+
+-- Table for movie-artist relationship
+CREATE TABLE movie_artists (
+    movie_id INT,
+    artist_id INT,
+    role_id INT,
+    PRIMARY KEY (movie_id, artist_id, role_id),
+    FOREIGN KEY (movie_id) REFERENCES movies(movie_id),
+    FOREIGN KEY (artist_id) REFERENCES artists(artist_id),
+    FOREIGN KEY (role_id) REFERENCES roles(role_id)
+);
+
+-- Insert sample data for genres
+INSERT INTO genres (name) VALUES 
+    ('Drama'),
+    ('Action'),
+    ('Comedy'),
+    ('Thriller');
+
+-- Insert sample data for users
+INSERT INTO users (username, email) VALUES 
+    ('user1', 'user1@example.com'),
+    ('user2', 'user2@example.com');
+
+-- Insert sample data for artists
+INSERT INTO artists (name) VALUES 
+    ('Actor 1'),
+    ('Actor 2'),
+    ('Director 1');
+
+-- Insert sample data for roles
+INSERT INTO roles (role_name) VALUES 
+    ('Lead Actor'),
+    ('Supporting Actor'),
+    ('Director');
+
+-- Insert sample data for movies
+INSERT INTO movies (title, release_year, duration_minutes, plot) 
+VALUES 
+    ('Movie 1', 2020, 120, 'Plot of Movie 1'),
+    ('Movie 2', 2018, 110, 'Plot of Movie 2');
+
+-- Insert sample data for movie-genre relationship
+INSERT INTO movie_genres (movie_id, genre_id) VALUES 
+    (1, 1), -- Movie 1 is Drama
+    (1, 3), -- Movie 1 is Comedy
+    (2, 1), -- Movie 2 is Drama
+    (2, 4); -- Movie 2 is Thriller
+
+-- Insert sample data for media
+INSERT INTO media (movie_id, media_type, url) VALUES 
+    (1, 'Trailer', 'https://www.example.com/trailer1.mp4'),
+    (1, 'Clip', 'https://www.example.com/clip1.mp4'),
+    (2, 'Trailer', 'https://www.example.com/trailer2.mp4');
+
+-- Insert sample data for reviews
+INSERT INTO reviews (movie_id, user_id, rating, review) VALUES 
+    (1, 1, 8.5, 'Good movie, enjoyed it.'),
+    (1, 2, 9.0, 'Funny and entertaining.'),
+    (2, 1, 7.5, 'Great suspense and plot.');
+
+-- Insert sample data for artist skills
+INSERT INTO artist_skills (artist_id, skill) VALUES 
+    (1, 'Acting'),
+    (2, 'Acting'),
+    (3, 'Directing');
+
+-- Insert sample data for movie-artist relationship
+INSERT INTO movie_artists (movie_id, artist_id, role_id) VALUES 
+    (1, 1, 1), -- Actor 1 is Lead Actor in Movie 1
+    (1, 2, 2), -- Actor 2 is Supporting Actor in Movie 1
+    (2, 3, 3); -- Director 1 is Director in Movie 2
